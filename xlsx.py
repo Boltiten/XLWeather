@@ -1,6 +1,9 @@
 import requests
 from datetime import datetime, date
 import openpyxl
+import sys
+
+## TODO import sys, use arguments
 
 
 url = 'https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.63333&lon=11.11667'
@@ -22,7 +25,20 @@ ws = wb['Ute Temp']
 cell_row = datetime.now().timetuple().tm_yday-23
 today = date.today()
 
-ws["A"+str(cell_row)] = today
-ws["B"+str(cell_row)] = data["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"]
+place = "A"
+
+ws[place+str(cell_row)] = today
+
+daytime = sys.argv[1]
+
+match daytime:
+    case "morning":
+        place = "B"
+    case "mid":
+        place = "C"
+    case "noon":
+        place = "D"
+
+ws[place+str(cell_row)] = data["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"]
 
 wb.save("G:\My Drive\Personlige Prosjekt\Været\Strømanalyse2023-1.xlsx")
